@@ -1,0 +1,82 @@
+{
+  "name": "Lead Processing and Reporting Workflow",
+  "description": "Workflow for processing raw lead data, enriching it with AI analysis, and sending an email report.",
+  "steps": [
+    {
+      "id": "read_raw_data",
+      "name": "Read Raw Lead Data",
+      "description": "Reads lead data from the raw data file (Excel).",
+      "inputs": [
+        { "type": "file", "name": "RAW_DATA_FILE", "format": "xlsx" }
+      ],
+      "outputs": [
+        { "type": "data", "name": "raw_records", "format": "array of objects" }
+      ]
+    },
+    {
+      "id": "process_leads_ai",
+      "name": "Process Leads with AI",
+      "description": "Iterates through raw records and uses AI to generate summaries and lead quality scores.",
+      "inputs": [
+        { "type": "data", "name": "raw_records", "from": "read_raw_data" }
+      ],
+      "outputs": [
+        { "type": "data", "name": "processed_results", "format": "array of arrays" }
+      ],
+      "dependencies": ["read_raw_data"]
+    },
+    {
+      "id": "write_processed_data",
+      "name": "Write Processed Data to File",
+      "description": "Writes the AI-processed lead data to a new Excel file.",
+      "inputs": [
+        { "type": "data", "name": "processed_results", "from": "process_leads_ai" },
+        { "type": "file", "name": "PROCESSED_DATA_FILE", "format": "xlsx" }
+      ],
+      "outputs": [
+        { "type": "file", "name": "PROCESSED_DATA_FILE", "format": "xlsx" }
+      ],
+      "dependencies": ["process_leads_ai"]
+    },
+    {
+      "id": "read_processed_data_for_email",
+      "name": "Read Processed Data for Email",
+      "description": "Reads the processed data from the Excel file to construct the email body.",
+      "inputs": [
+        { "type": "file", "name": "PROCESSED_DATA_FILE", "from": "write_processed_data" }
+      ],
+      "outputs": [
+        { "type": "data", "name": "records_to_send", "format": "array of objects" }
+      ],
+      "dependencies": ["write_processed_data"]
+    },
+     {
+      "id": "construct_email_body",
+      "name": "Construct Email Body",
+      "description": "Generates the HTML content for the email using the processed data.",
+      "inputs": [
+        { "type": "data", "name": "records_to_send", "from": "read_processed_data_for_email" }
+      ],
+      "outputs": [
+        { "type": "data", "name": "email_body_html", "format": "html" }
+      ],
+      "dependencies": ["read_processed_data_for_email"]
+    },
+    {
+      "id": "send_email_report",
+      "name": "Send Email Report",
+      "description": "Sends an email with the processed data report attached and a summary in the body.",
+      "inputs": [
+        { "type": "data", "name": "email_body_html", "from": "construct_email_body" },
+        { "type": "file", "name": "PROCESSED_DATA_FILE", "from": "write_processed_data" },
+        { "type": "credential", "name": "SENDER_EMAIL" },
+        { "type": "credential", "name": "SENDER_PASSWORD" },
+        { "type": "address", "name": "RECEIVER_EMAIL" },
+        { "type": "config", "name": "SMTP_SERVER" },
+        { "type": "config", "name": "SMTP_PORT" }
+      ],
+      "outputs": [],
+      "dependencies": ["construct_email_body", "write_processed_data"]
+    }
+  ]
+}

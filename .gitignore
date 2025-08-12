@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+.pnp/
+.pnp.js
+
+# build artifacts
+build/
+dist/
+.next/ # For Next.js build output
+out/ # For static Next.js export
+
+# environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store # Mac
+Thumbs.db # Windows
+ehthumbs.db # Windows
+.project # Eclipse
+.classpath # Eclipse
+.settings/ # Eclipse
+
+# Editor directories and files
+.vscode/ # VS Code settings, if you don't want to share them
+*.sublime-project
+*.sublime-workspace
+.idea/ # IntelliJ / WebStorm
+
+# Test coverage
+coverage/
+
+# Prisma
+# If you auto-generate your Prisma client into node_modules,
+# then node_modules/ is sufficient. Otherwise, you might add:
+# prisma/generated/
+
+# For Next.js cache
+.next/cache/
+.vercel/
